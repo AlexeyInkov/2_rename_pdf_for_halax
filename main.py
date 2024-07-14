@@ -6,9 +6,7 @@ pip install PyPDF2
 pip install pdf2image
 pip install pytesseract
 pip install Image
-pip install
-pip install
-pip install
+
 """
 
 import glob
@@ -16,9 +14,9 @@ import os
 import time
 
 from tkinter import filedialog
-from Find import Find
-from PDF_File import PDF_File
-from Split import Split
+from src.find import Find
+from src.pdf_file import PDF_File
+from src.split import Split
 
 
 dirpdf = filedialog.askdirectory()
