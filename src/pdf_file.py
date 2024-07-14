@@ -1,4 +1,7 @@
+import PIL
 import pytesseract as pt
+from PIL import Image
+from loguru import logger
 from pdf2image import convert_from_path
 
 from src.config_data import settings
@@ -18,4 +21,10 @@ class PDF_File:
     def image_to_text(self):
         pt.pytesseract.tesseract_cmd = settings.tesseract
         text = pt.image_to_string(self.image, lang="rus")
+        logger.debug(f"распознал картинку")
         return text
+
+    def rotate_image(self):
+        self.image = self.image.rotate(90, expand=True, resample=Image.BICUBIC)
+        self.text = self.image_to_text()
+        logger.debug(f"повернул картинку")

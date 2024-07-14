@@ -9,6 +9,8 @@ pip install Image
 import glob
 import os
 import time
+import uuid
+
 from loguru import logger
 from tkinter import filedialog
 from src.parsertext import find_file, find_name
@@ -39,11 +41,17 @@ def main():
 
             pdf_file = PDF_File(file)
 
-            print(pdf_file.text)
-
-            new_filename = find_name(pdf_file.text)
-            if new_filename == "Введи в ручную":
+            # print(pdf_file.text)
+            for _ in range(3):
+                try:
+                    new_filename = find_name(pdf_file.text)
+                except ValueError:
+                    pdf_file.rotate_image()
+                else:
+                    break
+            else:
                 new_filename = f"Не распознал {count_split}.pdf"
+
             dir_name, _ = os.path.split(file)
 
             newfile = os.path.join(dir_name, new_filename)
@@ -53,7 +61,7 @@ def main():
                 os.rename(file, newfile)
             except (FileExistsError, FileNotFoundError):
                 filename = split_file_name(new_filename)
-                new_filename = f"{filename[1]}_{count_split}.{filename[2]}"
+                new_filename = f"{filename[1]}_{uuid}.{filename[2]}"
 
                 newfile = os.path.join(dir_name, new_filename)
                 os.rename(file, newfile)
