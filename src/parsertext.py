@@ -9,6 +9,7 @@ import glob
 from loguru import logger
 
 from src.pdf_file import PDF_File
+from src.split import split_pdf_pages
 
 
 def find_file(dir_file, template):
@@ -17,7 +18,7 @@ def find_file(dir_file, template):
     for filename in glob.glob(dir_file + "/**/*." + (template), recursive=True):
         logger.info(f"Найден файл: {filename}")
         target_dir = dir_file + r"/split"
-        PDF_File.split_pdf_pages(filename, target_dir)
+        split_pdf_pages(filename, target_dir)
         count_file += 1
     logger.info(f"Найдено {count_file} файлов")
 
@@ -37,32 +38,32 @@ def find_name(text):
         "ноябрь": "11",
         "декабрь": "12",
     }
-    list = text.split()
-    print(list)
+    lst = text.split()
+    print(lst)
     try:
-        p = list.index("за", 0, 30)
-        m = str(list[p + 1]).lower()
+        p = lst.index("за", 0, 30)
+        m = str(lst[p + 1]).lower()
         try:
-            period = str(list[p + 2]) + str(months[m])
+            period = str(lst[p + 2]) + str(months[m])
         except KeyError:
-            period = str(list[p + 2]) + "XX"
+            period = str(lst[p + 2]) + "XX"
     except ValueError or UnboundLocalError:
         p = 0
         period = "По часовой 90"
 
     #    print(period)
     try:
-        an = list.index("Адрес:", 0, 50)
+        an = lst.index("Адрес:", 0, 50)
         try:
-            ak1 = list.index("Телефон:", an)
+            ak1 = lst.index("Телефон:", an)
         except ValueError:
             ak1 = 1000
         try:
-            ak2 = list.index("Строит.адрес:", an)
+            ak2 = lst.index("Строит.адрес:", an)
         except ValueError:
             ak2 = 1000
         try:
-            ak3 = list.index("Код", an)
+            ak3 = lst.index("Код", an)
         except ValueError:
             ak3 = 1000
 
@@ -80,7 +81,7 @@ def find_name(text):
             newfilename = "Введи в ручную"
         else:
             adres = (
-                str(list[an + 1])
+                str(lst[an + 1])
                 .replace(".", "")
                 .replace(",", "")
                 .replace(":", "")
@@ -93,7 +94,7 @@ def find_name(text):
                 .replace("<", "")
             )
             for i in range(an + 2, ak):
-                adres += "_" + str(list[i]).replace(".", "").replace(",", "").replace(
+                adres += "_" + str(lst[i]).replace(".", "").replace(",", "").replace(
                     ":", ""
                 ).replace("=", "").replace("?", "").replace("!", "").replace(
                     "|", ""

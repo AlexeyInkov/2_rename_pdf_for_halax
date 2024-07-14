@@ -1,12 +1,9 @@
 """
-Created on Tue Nov 29 10:25:15 2022
-@author: Alex
 python -m pip install --upgrade pip
 pip install PyPDF2
 pip install pdf2image
 pip install pytesseract
 pip install Image
-
 """
 
 import glob
@@ -16,7 +13,7 @@ from loguru import logger
 from tkinter import filedialog
 from src.parsertext import find_file, find_name
 from src.pdf_file import PDF_File
-from src.split import Split
+from src.split import split_file_name
 
 logger.add(
     "log/info.log",
@@ -27,43 +24,46 @@ logger.add(
 
 
 def main():
-    dirpdf = filedialog.askdirectory()
-    if dirpdf != "":
-        begintime = time.time()
+    dir_pdf = filedialog.askdirectory()
+    if dir_pdf != "":
+        begin_time = time.time()
 
-        find_file(dirpdf, "pdf")
+        find_file(dir_pdf, "pdf")
 
         count_split = 0
-        for file in glob.glob(dirpdf + "/split/*.pdf"):
+        for file in glob.glob(dir_pdf + "/split/*.pdf"):
+            count_split += 1
             timefile = time.time()
+
             logger.info(f"Найден файл №{count_split}: {file}")
-            image = PDF_File.pdf_to_image(file)
-            text = PDF_File.image_to_text(image)
-            os.remove(image)
-            logger.info(f"Удален файл:", image)
-            print(text)
-            newfilename = find_name(text)
-            if newfilename == "Введи в ручную":
-                newfilename = f"Не распознал {count_split}.pdf"
-            dirname, filename = os.path.split(file)
-            newfile = os.path.join(dirname, newfilename)
-            logger.info("Новое имя файла:", newfile)
+
+            pdf_file = PDF_File(file)
+
+            print(pdf_file.text)
+
+            new_filename = find_name(pdf_file.text)
+            if new_filename == "Введи в ручную":
+                new_filename = f"Не распознал {count_split}.pdf"
+            dir_name, _ = os.path.split(file)
+
+            newfile = os.path.join(dir_name, new_filename)
+            logger.info(f"Новое имя файла: {newfile}")
+
             try:
                 os.rename(file, newfile)
             except (FileExistsError, FileNotFoundError):
-                newfilename = (
-                    Split.file_name(Split.replace_flash(newfilename))
-                    + f"_{count_split}_.pdf"
-                )
-                newfile = os.path.join(dirname, newfilename)
+                filename = split_file_name(new_filename)
+                new_filename = f"{filename[1]}_{count_split}.{filename[2]}"
+
+                newfile = os.path.join(dir_name, new_filename)
                 os.rename(file, newfile)
-            logger.info("Создан файл:", newfile)
+            logger.info(f"Создан файл: {newfile}")
             logger.info(
                 f"Время обработки файла №{count_split} составило: {int(time.time() - timefile):.1f} сек"
             )
-            count_split += 1
+
         logger.info(f"Найдено {count_split} файлов")
-        t = time.time() - begintime
+        t = time.time() - begin_time
         logger.info(
             f"Время работы: {int(t/3600):0>2d}:{int(t%3600/60):0>2d}:{int(t%3600%60):0>2d}"
         )
