@@ -32,23 +32,21 @@ def split_pdf_pages(input_pdf_path, target_dir, fname_fmt="{name}_{num_page:04d}
         input_pdf = PyPDF2.PdfReader(input_stream)
         logger.info(f"Открыт файл: {input_pdf_path}")
         page_files = []
-        length = len(input_pdf.pages)
-        if length != 1:
-            i = 0
-            for page in input_pdf.pages:
-                output = PyPDF2.PdfWriter()
-                output.add_page(page)
-                if i == 0:
-                    file_name = os.path.join(
-                        target_dir, ".".join(split_file_name(input_pdf_path)[1:])
-                    )
-                else:
-                    file_name = os.path.join(
-                        target_dir,
-                        fname_fmt.format(
-                            name=split_file_name(input_pdf_path)[1], num_page=i
-                        ),
-                    )
-                page_files.append(file_name)
-                save_page_to_file(output, file_name)
-                i += 1
+        i = 0
+        for page in input_pdf.pages:
+            output = PyPDF2.PdfWriter()
+            output.add_page(page)
+            if i == 0:
+                file_name = os.path.join(
+                    target_dir, ".".join(split_file_name(input_pdf_path)[1:])
+                )
+            else:
+                file_name = os.path.join(
+                    target_dir,
+                    fname_fmt.format(
+                        name=split_file_name(input_pdf_path)[1], num_page=i
+                    ),
+                )
+            page_files.append(file_name)
+            save_page_to_file(output, file_name)
+            i += 1
