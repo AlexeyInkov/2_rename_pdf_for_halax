@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec  2 00:04:33 2022
-
-@author: Alex
-"""
 import os
 import uuid
 import PyPDF2
