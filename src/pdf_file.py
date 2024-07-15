@@ -8,9 +8,11 @@ from src.config_data import settings
 
 
 class PDF_File:
+
     def __init__(self, input_pdf_path):
         self.pdf = input_pdf_path
         self.image = self.pdf_to_image()
+        self.image_header = self.crop_image()
         self.text = self.image_to_text()
 
     def pdf_to_image(self):
@@ -18,13 +20,21 @@ class PDF_File:
         for image in images:
             return image
 
+    def crop_image(self):
+        width, height = self.image.size
+        image_header = self.image.crop((0, 0, width, int(height * 0.12)))
+        logger.debug(f"Обрезал картинку")
+        # image_header.show()
+        return image_header
+
     def image_to_text(self):
         pt.pytesseract.tesseract_cmd = settings.tesseract
-        text = pt.image_to_string(self.image, lang="rus")
+        text = pt.image_to_string(self.image_header, lang="rus")
         logger.debug(f"распознал картинку")
         return text
 
     def rotate_image(self):
         self.image = self.image.rotate(90, expand=True, resample=Image.BICUBIC)
-        self.text = self.image_to_text()
         logger.debug(f"повернул картинку")
+        self.image_header = self.crop_image()
+        self.text = self.image_to_text()
