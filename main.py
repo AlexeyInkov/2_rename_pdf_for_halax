@@ -10,11 +10,12 @@ import glob
 import os
 import time
 import uuid
+from tkinter import filedialog
 
 from loguru import logger
-from tkinter import filedialog
+
 from src.parsertext import find_file, find_name
-from src.pdf_file import PDF_File
+from src.pdf_file import PDFfile
 from src.split import split_file_name
 
 logger.add(
@@ -40,7 +41,7 @@ def main():
 
             logger.info(f"Найден файл №{count_split}: {file}")
 
-            pdf_file = PDF_File(file)
+            pdf_file = PDFfile(file)
 
             for _ in range(4):
                 try:

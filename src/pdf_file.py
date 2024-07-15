@@ -1,4 +1,3 @@
-import PIL
 import pytesseract as pt
 from PIL import Image
 from loguru import logger
@@ -7,7 +6,7 @@ from pdf2image import convert_from_path
 from src.config_data import settings
 
 
-class PDF_File:
+class PDFfile:
 
     def __init__(self, input_pdf_path):
         self.pdf = input_pdf_path
@@ -22,9 +21,8 @@ class PDF_File:
 
     def crop_image(self):
         width, height = self.image.size
-        image_header = self.image.crop((0, 0, width, int(height * 0.12)))
+        image_header = self.image.crop((0, 0, width, int(height * 0.15)))
         logger.debug(f"Обрезал картинку")
-        # image_header.show()
         return image_header
 
     def image_to_text(self):
