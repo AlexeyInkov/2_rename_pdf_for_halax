@@ -1,9 +1,3 @@
-"""
-Created on Wed Nov 30 21:21:16 2022
-
-@author: Alex
-"""
-
 import glob
 import re
 
@@ -40,16 +34,18 @@ def find_file(dir_file, template):
 
 def find_name(text):
     # print(text)
-    regex_address = r"(?<=[Адресол]{5}\W).{20,70}(?=[Номерc]{5})|(?<=[Адресол]{5}\W).{20,70}(?=[строитС]{6})|(?<=[Адресол]{5}\W).{20,70}(?=[Ккодл]{3})"
+    regex_address = r"(?<=[Адресоал]{5}\W).{10,90}(?=[Ном]{3})|(?<=[Адресаол]{5}\W).{10,90}(?=[строС]{4})|(?<=[Адреасол]{5}\W).{10,90}(?=[Ккодл]{3})|(?<=[Адресаол]{5}\W).{10,90}(?=\s$)"
     match_address = re.findall(regex_address, text, re.MULTILINE)
     if match_address:
         address = match_address[0]
-        logger.debug(f"Определил период: {address}")
-        regex_period = r"(?<=по\s\d{2}.)\d{2}\.\d{4}|\w{3,}\s\d{4}"
+        logger.debug(f"Определил адрес: {address}")
+        regex_period = (
+            r"\w{3,}\s\d{4}|(?<=по\s\d{2}.)\d{2}\.\d{4}|(?<=за\s)\w{3,8}\s*\d{4}"
+        )
         match_period = re.findall(regex_period, text, re.MULTILINE)
         if match_period:
             p = re.sub(r"\.", " ", match_period[0]).split()
-            logger.debug(f"Нашел дату: {p}")
+            logger.debug(f"Определил дату: {p}")
             if p[0].isdigit():
                 period = f"{p[-1]}{p[0]}"
             else:
@@ -66,26 +62,4 @@ def find_name(text):
         return f"{filename}.pdf"
     else:
         logger.debug(f"Не распознал адрес")
-        print(text)
         raise ValueError
-
-    # for tso, regex in REGEX.items():
-    #     match = re.findall(regex, text, re.MULTILINE)
-    #     if len(match) == 2:
-    #         p = match[0].split(".")
-    #         logger.debug(f"Нашел дату: {p}")
-    #         if p[0].isdigit():
-    #             period = f"{p[-1]}{p[0]}"
-    #         else:
-    #             p = match[0].split()
-    #             period = f"{p[-1]}{MONTHS.get(p[0].lower(), 'XX')}"
-    #         logger.debug(f"Определил период: {period}")
-    #         address = match[1]
-    #         logger.debug(f"Определил адрес: {address}")
-    #         filename = f"{tso}_{period}_{address}"
-    #         filename = re.sub(r"\W", "_", filename)
-    #         filename = re.sub(r"_{2,}", "_", filename)
-    #         return f"{filename}.pdf"
-    # logger.debug(f"Не распознал")
-    # # print(text)
-    # raise ValueError
