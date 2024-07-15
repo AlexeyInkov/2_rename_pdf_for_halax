@@ -25,6 +25,7 @@ logger.add(
 )
 
 
+@logger.catch
 def main():
     dir_pdf = filedialog.askdirectory()
     if dir_pdf != "":
@@ -41,8 +42,7 @@ def main():
 
             pdf_file = PDF_File(file)
 
-            # print(pdf_file.text)
-            for _ in range(3):
+            for _ in range(4):
                 try:
                     new_filename = find_name(pdf_file.text)
                 except ValueError:
@@ -61,7 +61,7 @@ def main():
                 os.rename(file, newfile)
             except (FileExistsError, FileNotFoundError):
                 filename = split_file_name(new_filename)
-                new_filename = f"{filename[1]}_{uuid}.{filename[2]}"
+                new_filename = f"{filename[1]}_{str(uuid.uuid4())[:6]}.{filename[2]}"
 
                 newfile = os.path.join(dir_name, new_filename)
                 os.rename(file, newfile)
