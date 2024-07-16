@@ -27,7 +27,7 @@ class PDFfile:
 
     def image_to_text(self):
         pt.pytesseract.tesseract_cmd = settings.tesseract
-        text = pt.image_to_string(self.image_header, lang="rus")
+        text = pt.image_to_string(self.image_header, lang=settings.tesseract_lang, config=settings.tesseract_config))
         logger.debug(f"распознал картинку")
         return text
 
