@@ -21,7 +21,7 @@ class PDFfile:
 
     def crop_image(self):
         width, height = self.image.size
-        image_header = self.image.crop((0, 0, width, int(height * 0.15)))
+        image_header = self.image.crop((0, 0, width, int(height * settings.height_header)))
         logger.debug(f"Обрезал картинку")
         return image_header
 
