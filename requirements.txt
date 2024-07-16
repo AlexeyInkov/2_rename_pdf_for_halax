@@ -1,0 +1,5 @@
+﻿pdf2image==1.17.0
+pillow==10.2.0
+PyPDF2==3.0.1
+pytesseract==0.3.10
+loguru==0.7.2
