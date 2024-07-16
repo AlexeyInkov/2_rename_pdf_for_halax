@@ -34,7 +34,7 @@ def find_file(dir_file, template):
 
 def find_name(text):
     # print(text)
-    regex_address = r"(?<=[Адресоал]{5}\W).{10,90}(?=[Ном]{3})|(?<=[Адресаол]{5}\W).{10,90}(?=[строС]{4})|(?<=[Адреасол]{5}\W).{10,90}(?=[Ккодл]{3})|(?<=[Адресаол]{5}\W).{10,90}(?=\s$)"
+    regex_address = r"(?<=[Адресоал]{5}\W).{10,90}(?=[Ном]{3})|(?<=[Адресаол]{5}\W).{10,90}(?=[строС]{4})|(?<=[Адреасол]{5}\W).{10,90}(?=[Ккодл]{3})|(?<=[Адресаол]{5}\W).{10,90}(?=\s*[Тел]{3})"
     match_address = re.findall(regex_address, text, re.MULTILINE)
     if match_address:
         address = match_address[0]
