@@ -3,6 +3,7 @@ class Settings:
     tesseract = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
     tesseract_lang = "rus"
     tesseract_config = "--psm 1"
+    height_header = 0.12
 
 
 settings = Settings()
