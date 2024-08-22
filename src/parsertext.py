@@ -1,8 +1,10 @@
 import glob
+import os
 import re
 
 from loguru import logger
 
+from src.config_data import settings
 from src.split import split_pdf_pages
 
 MONTHS = {
@@ -32,16 +34,32 @@ def find_file(dir_file, template):
     logger.info(f"Найдено {count_file} файлов")
 
 
+def save_txt(text):
+    if not os.path.exists("scan_text.txt"):
+        method = "w"
+    else:
+        method = "a"
+    with open("scan_text.txt", method) as file:
+        file.write(text)
+        file.write("------------------------------------------------")
+
+
 def find_name(text):
-    # print(text)
-    regex_address = r"(?<=[Адресоал]{5}\W).{10,90}(?=[Ном]{3})|(?<=[Адресаол]{5}\W).{10,90}(?=[строС]{4})|(?<=[Адреасол]{5}\W).{10,90}(?=[Ккодл]{3})|(?<=[Адресаол]{5}\W).{10,90}(?=\s$)"
+    save_txt(text)
+    regex_address = "|".join(
+        (
+            settings.regex_tgc,
+            settings.regex_tek,
+            settings.regex_pte,
+            settings.regex_te,
+            settings.regex_oth,
+        )
+    )
     match_address = re.findall(regex_address, text, re.MULTILINE)
     if match_address:
         address = match_address[0]
         logger.debug(f"Определил адрес: {address}")
-        regex_period = (
-            r"\w{3,}\s\d{4}|(?<=по\s\d{2}.)\d{2}\.\d{4}|(?<=за\s)\w{3,8}\s*\d{4}"
-        )
+        regex_period = settings.regex_period
         match_period = re.findall(regex_period, text, re.MULTILINE)
         if match_period:
             p = re.sub(r"\.", " ", match_period[0]).split()
