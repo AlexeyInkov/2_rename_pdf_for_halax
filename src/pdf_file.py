@@ -21,13 +21,19 @@ class PDFfile:
 
     def crop_image(self):
         width, height = self.image.size
-        image_header = self.image.crop((0, 0, width, int(height * settings.height_header)))
+        image_header = self.image.crop(
+            (0, 0, width, int(height * settings.height_header))
+        )
         logger.debug(f"Обрезал картинку")
         return image_header
 
     def image_to_text(self):
         pt.pytesseract.tesseract_cmd = settings.tesseract
-        text = pt.image_to_string(self.image_header, lang=settings.tesseract_lang, config=settings.tesseract_config))
+        text = pt.image_to_string(
+            self.image_header,
+            lang=settings.tesseract_lang,
+            config=settings.tesseract_config,
+        )
         logger.debug(f"распознал картинку")
         return text
 
